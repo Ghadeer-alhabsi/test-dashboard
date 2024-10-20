@@ -1,3 +1,4 @@
-streamlit==1.5.0
+streamlit==1.21.0
+protobuf==3.20.3
 pandas
 plost
