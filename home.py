@@ -28,7 +28,7 @@ def show_home_page():
     st.write("This is the content of the Home page.")
 
     # Example content that would be displayed after login
-    external_url = "https://industrial.ubidots.com/app/devices/64c25e84cabdff152246c63a"
+    external_url = 'https://industrial.ubidots.com/app/dashboards/public/dashboard/HZ15EbLdCK_ue-KywYWAQqezjyPGEmCMPdi3Y76Cbkg?nonavbar=true'
     st.components.v1.html(
         f'<iframe src="{external_url}" width="100%" height="600" frameborder="0"></iframe>',
         height=600
@@ -39,3 +39,6 @@ if st.session_state.logged_in and st.session_state.get("page") == "home":
     show_home_page()  # Show the home page if logged in
 else:
     show_login()  # Show the login form if not logged in
+
+
+
