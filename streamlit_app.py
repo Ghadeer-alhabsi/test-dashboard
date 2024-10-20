@@ -1,44 +1,47 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
+import plost
+from PIL import Image
 
-# Define your username and password
-USERNAME = "ghadeer@ilabmarine.com"
-PASSWORD = "123456"
+# Page setting
+st.set_page_config(layout="wide")
 
-# Initialize session state for logged-in status
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-def show_login():
-    # Create a login form
-    st.write("# Login to Access Home Page")
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+# Data
+seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
+stocks = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/stocks_toy.csv')
 
-    # Button to submit the login form
-    if st.button("Login"):
-        if username == USERNAME and password == PASSWORD:
-            st.session_state.logged_in = True  # Set login status to True
-            st.success("Logged in successfully!")
-            st.session_state.page = "home"  # Set the page state to home
-        else:
-            st.error("Incorrect username or password!")
+# Row A
+a1, a2, a3 = st.columns(3)
+a1.image(Image.open('streamlit-logo-secondary-colormark-darktext.png'))
+a2.metric("Wind", "9 mph", "-8%")
+a3.metric("Humidity", "86%", "4%")
 
-def show_home_page():
-    st.write("# Welcome to the Home Page")
-    st.write("This is the content of the Home page.")
+# Row B
+b1, b2, b3, b4 = st.columns(4)
+b1.metric("Temperature", "70 °F", "1.2 °F")
+b2.metric("Wind", "9 mph", "-8%")
+b3.metric("Humidity", "86%", "4%")
+b4.metric("Humidity", "86%", "4%")
 
-    # Example content that would be displayed after login
-    external_url = 'https://industrial.ubidots.com/app/dashboards/public/dashboard/HZ15EbLdCK_ue-KywYWAQqezjyPGEmCMPdi3Y76Cbkg?nonavbar=true'
-    st.components.v1.html(
-        f'<iframe src="{external_url}" width="100%" height="600" frameborder="0"></iframe>',
-        height=600
-    )
-
-# Check login status and page state to display the appropriate page
-if st.session_state.logged_in and st.session_state.get("page") == "home":
-    show_home_page()  # Show the home page if logged in
-else:
-    show_login()  # Show the login form if not logged in
-
-
-
+# Row C
+c1, c2 = st.columns((7,3))
+with c1:
+    st.markdown('### Heatmap')
+    plost.time_hist(
+    data=seattle_weather,
+    date='date',
+    x_unit='week',
+    y_unit='day',
+    color='temp_max',
+    aggregate='median',
+    legend=None)
+with c2:
+    st.markdown('### Bar chart')
+    plost.donut_chart(
+        data=stocks,
+        theta='q2',
+        color='company')
